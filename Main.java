@@ -1,89 +1,51 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 class Main {
     public static void main(String[] args) {
-        ArrayList<String> arrayList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
+        Map<Address, Integer> PriceForDelivery = new HashMap<>();
+
+        int shippingCost = 0;
+        Set<String> newCountries = new HashSet<>();
+
+        PriceForDelivery.put(new Address("Россия", "Якутск"), 150);
+        PriceForDelivery.put(new Address("Азербайджан", "Баку"), 250);
+        PriceForDelivery.put(new Address("США", "Остин"), 350);
 
         while (true) {
             System.out.println("Выберите операцию:\n" +
-                    "0. Выход из программы\n" +
-                    "1. Добавить дело\n" +
-                    "2. Показать дела\n" +
-                    "3. Удалить дело по номеру\n" +
-                    "4. Удалить дело по названию");
-            String number = scanner.nextLine();
-            int numberFinish = Integer.parseInt(number);
+                    "1. Заполнить новый заказ. \n" +
+                    "end - Выход из программы!");
 
-            if (numberFinish <= 0) {
+            String choiceOne = (scanner.nextLine());
+
+            if ("end".equals(choiceOne)) {
                 System.out.println("Выход из программы!");
                 break;
-            }
-            if (numberFinish == 1) {
-                System.out.println("Ващ выбор " + numberFinish);
-                System.out.print("Введите название задачи: ");
-                String task = scanner.nextLine();
-                arrayList.add(task);
-                System.out.println("Добавлено!");
-                System.out.println("Ваш список дел:");
-                for (int i = 0; i < arrayList.size(); i++) {
-                    System.out.println((i + 1) + " . " + arrayList.get(i));
-                }
-            }
-            if (numberFinish == 2) {
-                System.out.println("Ваш выбор " + numberFinish);
-                System.out.println("Ваш список дел:");
-                for (int i = 0; i < arrayList.size(); i++) {
-                    System.out.println((i + 1) + " . " + arrayList.get(i));
+            } else if (choiceOne.equals("1")) {
+                System.out.print("Введите страну: ");
+                String country = scanner.nextLine();
+                System.out.print("Введите город: ");
+                String city = scanner.nextLine();
+                System.out.print("Введите вес(кг): ");
+                int totalWeight = Integer.parseInt(scanner.nextLine());
 
-                }
-            }
-            if (numberFinish == 3) {
-                System.out.println("Ваш выбор " + numberFinish);
-                System.out.print("Введите номер для удаления: ");
-                String stg = scanner.nextLine();
-                int numberDelete = Integer.parseInt(stg);
-                if (numberDelete >= 1 && numberDelete <= arrayList.size()) {
-                    arrayList.remove(numberDelete - 1);
-                    System.out.println("Удаленно!");
+                Address userAddress = new Address(country, city);
+
+                if (PriceForDelivery.containsKey(userAddress)) {
+                    int pricePerKg = PriceForDelivery.get(userAddress);
+                    int deliveryCost = pricePerKg * totalWeight;
+                    shippingCost += deliveryCost;
+
+                    newCountries.add(country);
+
+                    System.out.println("Стоимость доставки составит: " + deliveryCost + " руб.");
+                    System.out.println("Общая стоимость всех доставок: " + shippingCost + " руб.");
+                    System.out.println("Количество стран доставки: " + newCountries.size());
                 } else {
-                    System.out.println("Задачи с таким номер нет!");
-                }
-                System.out.println("Ваш список дел:");
-                for (int i = 0; i < arrayList.size(); i++) {
-                    System.out.println((i + 1) + " . " + arrayList.get(i));
-                }
-            }
-            if (numberFinish == 4) {
-                System.out.println("Ваш выбор " + numberFinish);
-                System.out.print("Введите задачу для удаления: ");
-                String taskDelete = scanner.nextLine();
-
-                int oldSize = arrayList.size();
-
-                Iterator<String> iterator = arrayList.iterator();
-
-                while (iterator.hasNext()) {
-                    String task = iterator.next();
-                    if (task.equals(taskDelete)) {
-                        iterator.remove();
-                    }
-                }
-                if (arrayList.size() < oldSize) {
-                    System.out.println("Удаленно!");
-                } else {
-                    System.out.println("Задачи с таким значением нет!");
-                }
-                System.out.println("Ваш список дел:");
-                for (int i = 0; i < arrayList.size(); i++) {
-                    System.out.println((i + 1) + " . " + arrayList.get(i));
+                    System.out.println("Доставка по этому адресу отсутствует!");
                 }
             }
         }
     }
 }
-
-
